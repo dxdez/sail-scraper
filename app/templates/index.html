@@ -6,6 +6,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename= 'style.css') }}">
 </head>
 <body>
-   <h1>Num: {{random_number}}</h1>
+    <form action="/scrape" method="POST">
+        <label for="url">Enter a URL:</label>
+        <input type="text" id="url" name="url"><br><br>
+        <button type="submit">Scrape</button>
+    </form>
+    {% if result %}
+        <h2>Result:</h2>
+        <p>{{ result }}</p>
+    {% endif %}
 </body>
 </html>
