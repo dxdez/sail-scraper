@@ -11,9 +11,11 @@
         <textarea id="urls" name="urls" rows="10" cols="50"></textarea><br>
         <input type="submit" value="Scrape">
     </form>
-    {% if result %}
-        <h2>Result:</h2>
-        <p>{{ result }}</p>
+    {% if results %}
+        <h2>Results:</h2>
+        {% for result in results %}
+            <p>{{ result }}</p>
+        {% endfor %}
     {% endif %}
 </body>
 </html>

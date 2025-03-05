@@ -28,8 +28,7 @@ def execute_scrape():
         except Exception as e:
             print(f"Error scraping {url}: {e}")
     
-    combined_results = "\n".join(final_result_text)
-    return render_template('index.html', result=combined_results)
+    return render_template('index.html', results=final_result_text)
 
 
 if __name__ == "__main__":
