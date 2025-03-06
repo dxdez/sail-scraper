@@ -5,18 +5,39 @@
     <title>Sail Scraper</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename= 'favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename= 'style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
 </head>
 <body>
-    <form action="/scrape" method="POST">
-        <label for="urls">Enter URLs (one per line):</label><br>
-        <textarea id="urls" name="urls" rows="10" cols="50"></textarea><br>
-        <input type="submit" value="Scrape">
-    </form>
-    {% if results %}
-        <h2>Results:</h2>
-        {% for result in results %}
-            <p>{{ result }}</p>
-        {% endfor %}
-    {% endif %}
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>Sail Scraper</strong></li>
+            </ul>
+        </nav>
+        <hr/>
+        <div class="grid">
+            <div>
+                <h3>Scrape Form</h3>
+                <form action="/scrape" method="POST">
+                    <fieldset>
+                        <label for="urls">
+                            Enter URLs (one per line):
+                            <textarea id="urls" name="urls"></textarea>
+                        </label>
+                    </fieldset>
+                    <input type="submit" value="Scrape"/>
+                </form>
+            </div>
+            <div>
+                <h3>Scrape Results</h3>
+                {% if results %}
+                    <h4>Results:</h4>
+                    {% for result in results %}
+                        <p>{{ result }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </main>
 </body>
 </html>
