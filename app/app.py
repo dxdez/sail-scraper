@@ -12,6 +12,9 @@ def hello_world():
 @app.route('/scrape', methods=['POST'])
 def execute_scrape():
     urls_input = request.form.get('urls')
+    tag = request.form.get('tag', '').strip()
+    class_attr = request.form.get('class', '').strip()
+    
     urls = [url.strip() for url in urls_input.split('\n') if url.strip()]
     
     final_result_text = []
@@ -21,15 +24,22 @@ def execute_scrape():
             response = requests.get(url)
             response.encoding = response.apparent_encoding
             soup = BeautifulSoup(response.text, 'html.parser')
-            divs_with_class_p = soup.find_all('div', attrs={'class': 'p'})
-            extracted_text = [div.get_text() for div in divs_with_class_p]
+
+            if tag:
+                if class_attr:
+                    elements = soup.find_all(tag, class_=class_attr)
+                else:
+                    elements = soup.find_all(tag)
+            else:
+                elements = soup.find_all(text=True)
+            
+            extracted_text = [element.get_text() for element in elements]
             result_text = " ".join(extracted_text).replace("\xa0", " ").strip("[]")
             final_result_text.append(result_text)
         except Exception as e:
             print(f"Error scraping {url}: {e}")
     
     return render_template('index.html', results=final_result_text)
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
