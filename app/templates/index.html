@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Sail Scraper</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename= 'favicon.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'style.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
 </head>
 <body>
@@ -22,7 +21,7 @@
                     <fieldset>
                         <label for="urls">
                             Enter URLs (one per line):
-                            <textarea id="urls" name="urls"></textarea>
+                            <textarea id="urls" name="urls" rows="10"></textarea>
                         </label>
                     </fieldset>
                     <fieldset>
@@ -46,7 +45,6 @@
                     </fieldset>
                     <input type="submit" value="Scrape"/>
                 </form>
-
             </div>
             <div>
                 <h3>Scrape Results</h3>
