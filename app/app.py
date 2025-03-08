@@ -31,7 +31,7 @@ def execute_scrape():
                 else:
                     elements = soup.find_all(tag)
             else:
-                elements = soup.find_all(text=True)
+                elements = soup.find_all("body")
             
             extracted_text = [element.get_text() for element in elements]
             result_text = " ".join(extracted_text).replace("\xa0", " ").strip("[]")
