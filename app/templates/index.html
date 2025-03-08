@@ -33,9 +33,16 @@
                     </fieldset>
                     <fieldset>
                         <label for="class">
-                            Enter Class (optional, e.g., 'p'):
+                            Enter Class or Id (optional, e.g., 'p'):
                             <input type="text" id="class" name="class" placeholder="p"/>
                         </label>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Search Type</legend>
+                        <input type="radio" id="class-option" name="search_type" value="class" checked />
+                        <label htmlFor="class-option">Class</label>
+                        <input type="radio" id="id-option" name="search_type" value="id" />
+                        <label htmlFor="id-option">Id</label>
                     </fieldset>
                     <input type="submit" value="Scrape"/>
                 </form>
