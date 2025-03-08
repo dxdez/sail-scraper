@@ -14,7 +14,7 @@ def execute_scrape():
     urls_input = request.form.get('urls')
     tag = request.form.get('tag', '').strip()
     class_attr = request.form.get('class', '').strip()
-    
+    search_type = request.form.get('search_type', 'class')    
     urls = [url.strip() for url in urls_input.split('\n') if url.strip()]
     
     final_result_text = []
@@ -26,12 +26,18 @@ def execute_scrape():
             soup = BeautifulSoup(response.text, 'html.parser')
 
             if tag:
-                if class_attr:
-                    elements = soup.find_all(tag, class_=class_attr)
-                else:
-                    elements = soup.find_all(tag)
+                if search_type == 'class':  # If 'class' is selected
+                    if class_attr:
+                        elements = soup.find_all(tag, class_=class_attr)
+                    else:
+                        elements = soup.find_all(tag)
+                elif search_type == 'id':  # If 'id' is selected
+                    if class_attr:
+                        elements = soup.find_all(tag, id=class_attr)  # Use 'id' instead of 'class'
+                    else:
+                        elements = soup.find_all(tag)
             else:
-                elements = soup.find_all(text=True)
+                elements = soup.find_all("body")
             
             extracted_text = [element.get_text() for element in elements]
             result_text = " ".join(extracted_text).replace("\xa0", " ").strip("[]")
