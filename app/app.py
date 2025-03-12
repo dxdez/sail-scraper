@@ -9,42 +9,51 @@ app = Flask(__name__)
 def hello_world():
     return render_template('index.html') 
 
+def fetch_page_content(url):
+    try:
+        response = requests.get(url)
+        response.encoding = response.apparent_encoding
+        soup = BeautifulSoup(response.text, 'html.parser')
+        return soup
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching {url}: {e}")
+        return None
+
+def find_elements(soup, tag, class_attr, search_type):
+    if not tag:
+        return soup.find_all("body")
+    
+    if search_type == 'class':
+        return soup.find_all(tag, class_=class_attr) if class_attr else soup.find_all(tag)
+    elif search_type == 'id':
+        return soup.find_all(tag, id=class_attr) if class_attr else soup.find_all(tag)
+
+def extract_text_from_elements(elements):
+    return " ".join([element.get_text() for element in elements]).replace("\xa0", " ").strip("[]")
+
+def process_urls(urls, tag, class_attr, search_type):
+    final_result_text = []
+    
+    for url in urls:
+        soup = fetch_page_content(url)
+        if soup:
+            elements = find_elements(soup, tag, class_attr, search_type)
+            result_text = extract_text_from_elements(elements)
+            final_result_text.append(result_text)
+    
+    return final_result_text
+
 @app.route('/scrape', methods=['POST'])
 def execute_scrape():
     urls_input = request.form.get('urls')
     tag = request.form.get('tag', '').strip()
     class_attr = request.form.get('class', '').strip()
-    search_type = request.form.get('search_type', 'class')    
-    urls = [url.strip() for url in urls_input.split('\n') if url.strip()]
-    
-    final_result_text = []
-    
-    for url in urls:
-        try:
-            response = requests.get(url)
-            response.encoding = response.apparent_encoding
-            soup = BeautifulSoup(response.text, 'html.parser')
+    search_type = request.form.get('search_type', 'class')
 
-            if tag:
-                if search_type == 'class':  # If 'class' is selected
-                    if class_attr:
-                        elements = soup.find_all(tag, class_=class_attr)
-                    else:
-                        elements = soup.find_all(tag)
-                elif search_type == 'id':  # If 'id' is selected
-                    if class_attr:
-                        elements = soup.find_all(tag, id=class_attr)  # Use 'id' instead of 'class'
-                    else:
-                        elements = soup.find_all(tag)
-            else:
-                elements = soup.find_all("body")
-            
-            extracted_text = [element.get_text() for element in elements]
-            result_text = " ".join(extracted_text).replace("\xa0", " ").strip("[]")
-            final_result_text.append(result_text)
-        except Exception as e:
-            print(f"Error scraping {url}: {e}")
-    
+    urls = [url.strip() for url in urls_input.split('\n') if url.strip()]
+
+    final_result_text = process_urls(urls, tag, class_attr, search_type)
+
     return render_template('index.html', results=final_result_text)
 
 if __name__ == "__main__":
