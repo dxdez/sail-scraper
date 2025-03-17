@@ -29,6 +29,10 @@ def find_elements(soup, tag, class_attr, search_type):
         return soup.find_all(tag, id=class_attr) if class_attr else soup.find_all(tag)
 
 def extract_text_from_elements(elements):
+    for element in elements:
+        for anchor in element.find_all('a'):
+            anchor.decompose()
+    
     return " ".join([element.get_text() for element in elements]).replace("\xa0", " ").strip("[]")
 
 def process_urls(urls, tag, class_attr, search_type):
