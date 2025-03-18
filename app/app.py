@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file, session
 from bs4 import BeautifulSoup
 import requests
+import os
+import tempfile
 import html
 
 app = Flask(__name__)
