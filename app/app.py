@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file, session
 from bs4 import BeautifulSoup
 import requests
+import os
+import tempfile
 import html
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 @app.route('/')
 def hello_world():
@@ -57,8 +60,22 @@ def execute_scrape():
     urls = [url.strip() for url in urls_input.split('\n') if url.strip()]
 
     final_result_text = process_urls(urls, tag, class_attr, search_type)
+    session['scraped_content'] = final_result_text
 
     return render_template('index.html', results=final_result_text)
+
+@app.route('/download')
+def download_file():
+    if 'scraped_content' not in session:
+        return "No content to download. Please scrape first.", 400
+    
+    final_result_text = session['scraped_content']
+    
+    with tempfile.NamedTemporaryFile(delete=False, mode='w', encoding='utf-8', suffix='.txt') as temp_file:
+        temp_file.write("\n\n".join(final_result_text))
+        temp_filename = temp_file.name
+    
+    return send_file(temp_filename, as_attachment=True, download_name="scraped_content.txt")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
